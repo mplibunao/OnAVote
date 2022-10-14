@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { prisma } from '@/infra/db'
+import { prisma } from '@/server/infra/db'
 
 const Home: NextPage = (props: any) => {
 	return (
