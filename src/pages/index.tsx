@@ -1,11 +1,12 @@
 import type { NextPage } from 'next'
 import { trpc } from '@/utils/trpc'
 import React from 'react'
+import Link from 'next/link'
 
 export const QuestionCreator = (): JSX.Element => {
 	const inputRef = React.useRef<HTMLInputElement>(null)
 	const client = trpc.useContext()
-	const { mutate } = trpc.useMutation('questions.create', {
+	const { mutate, isLoading } = trpc.useMutation('questions.create', {
 		onSuccess: () => {
 			client.invalidateQueries(['questions.getAll'])
 
@@ -19,12 +20,12 @@ export const QuestionCreator = (): JSX.Element => {
 
 	return (
 		<input
+			disabled={isLoading}
 			className='rounded-md border border-gray-300 p-2'
 			ref={inputRef}
 			onKeyDown={(event) => {
 				if (event.key === 'Enter') {
 					mutate({ question: event.currentTarget.value })
-					event.currentTarget.value = ''
 				}
 			}}
 		/>
@@ -41,9 +42,11 @@ const Home: NextPage = () => {
 			<div className='flex flex-col'>
 				<div className='text-2xl font-bold'>Questions</div>
 				{data.map((question) => (
-					<div key={question.id} className='flex flex-col p-4'>
-						{question.question}
-					</div>
+					<Link href={`/question/${question.id}`} key={question.id} passHref>
+						<a>
+							<div className='flex flex-col p-4'>{question.question}</div>
+						</a>
+					</Link>
 				))}
 			</div>
 			<QuestionCreator />
