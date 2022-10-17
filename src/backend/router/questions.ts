@@ -3,9 +3,13 @@ import { z } from 'zod'
 import { createRouter } from './context'
 
 export const questionRouter = createRouter()
-	.query('getAll', {
-		async resolve() {
-			return await prisma.pollQuestion.findMany()
+	.query('getAllMyQuestions', {
+		async resolve({ ctx }) {
+			return await prisma.pollQuestion.findMany({
+				where: {
+					ownerToken: { equals: ctx.token },
+				},
+			})
 		},
 	})
 	.query('getById', {
