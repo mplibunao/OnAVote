@@ -5,6 +5,8 @@ import { createRouter } from './context'
 export const questionRouter = createRouter()
 	.query('getAllMyQuestions', {
 		async resolve({ ctx }) {
+			if (!ctx.token) return []
+
 			return await prisma.pollQuestion.findMany({
 				where: {
 					ownerToken: { equals: ctx.token },
