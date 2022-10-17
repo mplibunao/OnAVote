@@ -8,18 +8,20 @@ export interface QuestionsPageContentProps {
 export const QuestionsPageContent = ({
 	id,
 }: QuestionsPageContentProps): JSX.Element => {
-	const { data, isLoading } = trpc.useQuery([
-		'questions.getById',
-		{ id },
-	])
+	const { data, isLoading } = trpc.useQuery(['questions.getById', { id }])
 
 	if (!isLoading && !data) return <div>Question not found</div>
 
 	return (
 		<div className='flex flex-col p-8'>
-			<div className='text-2xl font-bold'>{data?.question}</div>
+			{data?.isOwner && (
+				<div className='rounded-md bg-red-700 p-3'>You made this</div>
+			)}
+
+			<div className='text-2xl font-bold'>{data?.question?.question}</div>
+
 			<div>
-				{(data?.options as string[])?.map((option, index) => (
+				{(data?.question?.options as string[])?.map((option, index) => (
 					<div key={index}>{option}</div>
 				))}
 			</div>
