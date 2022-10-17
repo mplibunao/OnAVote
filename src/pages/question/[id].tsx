@@ -8,7 +8,7 @@ export interface QuestionsPageContentProps {
 export const QuestionsPageContent = ({
 	id,
 }: QuestionsPageContentProps): JSX.Element => {
-	const { data, isLoading, error } = trpc.useQuery([
+	const { data, isLoading } = trpc.useQuery([
 		'questions.getById',
 		{ id },
 	])
