@@ -32,7 +32,7 @@ export const QuestionsPageContent = ({
 								<div
 									key={index}
 									className={data.vote?.choice === index ? 'underline' : ''}
-								>{`${data.votes[index]?._count} - ${option.text}`}</div>
+								>{`${data.votes[index]?._count ?? 0} - ${option.text}`}</div>
 							)
 						}
 
