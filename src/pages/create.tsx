@@ -20,8 +20,10 @@ const CreateQuestionForm = () => {
 	} = useForm<CreateQuestionValidator>({
 		resolver: zodResolver(createQuestionValidator),
 		defaultValues: { question: '', options: [{ text: 'Yes' }, { text: 'No' }] },
+		mode: 'onChange',
 	})
 
+	console.log('errors', errors) // eslint-disable-line no-console
 	const { fields, append, remove } = useFieldArray({
 		control, // control props comes from useForm (optional: if you are using FormContext)
 		name: 'options', // unique name for your Field Array
@@ -105,6 +107,12 @@ const CreateQuestionForm = () => {
 												</svg>
 											</button>
 										</section>
+
+										{errors.options && errors.options[index] && (
+											<p className='text-red-400'>
+												{errors.options[index]?.text?.message}
+											</p>
+										)}
 									</div>
 								)
 							})}
