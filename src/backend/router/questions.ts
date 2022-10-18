@@ -33,7 +33,11 @@ export const questionRouter = createRouter()
 			if (!ctx.token) throw new Error('Unauthorized')
 
 			return await prisma.pollQuestion.create({
-				data: { question: input.question, options: [], ownerToken: ctx.token },
+				data: {
+					question: input.question,
+					options: input.options,
+					ownerToken: ctx.token,
+				},
 			})
 		},
 	})

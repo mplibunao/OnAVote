@@ -2,7 +2,7 @@ import { trpc } from '@/utils/trpc'
 import Head from 'next/head'
 import Link from 'next/link'
 import React from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
 	CreateQuestionValidator,
@@ -15,9 +15,16 @@ const CreateQuestionForm = () => {
 	const {
 		register,
 		handleSubmit,
+		control,
 		formState: { errors },
 	} = useForm<CreateQuestionValidator>({
 		resolver: zodResolver(createQuestionValidator),
+		defaultValues: { question: '', options: [{ text: 'Yes' }, { text: 'No' }] },
+	})
+
+	const { fields, append, remove } = useFieldArray({
+		control, // control props comes from useForm (optional: if you are using FormContext)
+		name: 'options', // unique name for your Field Array
 	})
 
 	const { mutate, isLoading, data } = trpc.useMutation('questions.create', {
@@ -66,54 +73,54 @@ const CreateQuestionForm = () => {
 							)}
 						</div>
 
-						{/*
-						 *<div className='grid w-full grid-cols-1 gap-x-5 gap-y-3 md:grid-cols-2'>
-						 *  {fields.map((field, index) => {
-						 *    return (
-						 *      <div key={field.id}>
-						 *        <section
-						 *          className='flex items-center space-x-3'
-						 *          key={field.id}
-						 *        >
-						 *          <input
-						 *            placeholder='name'
-						 *            {...register(`options.${index}.text`, {
-						 *              required: true,
-						 *            })}
-						 *            className='input input-bordered w-full font-medium text-gray-300'
-						 *          />
-						 *          <button type='button' onClick={() => remove(index)}>
-						 *            <svg
-						 *              xmlns='http://www.w3.org/2000/svg'
-						 *              className='h-6 w-6 text-gray-500'
-						 *              fill='none'
-						 *              viewBox='0 0 24 24'
-						 *              stroke='currentColor'
-						 *              strokeWidth={2}
-						 *            >
-						 *              <path
-						 *                strokeLinecap='round'
-						 *                strokeLinejoin='round'
-						 *                d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-						 *              />
-						 *            </svg>
-						 *          </button>
-						 *        </section>
-						 *      </div>
-						 *    )
-						 *  })}
-						 *</div>
-						 */}
+						<div className='grid w-full grid-cols-1 gap-x-5 gap-y-3 md:grid-cols-2'>
+							{fields.map((field, index) => {
+								return (
+									<div key={field.id}>
+										<section
+											className='flex items-center space-x-3'
+											key={field.id}
+										>
+											<input
+												placeholder='name'
+												{...register(`options.${index}.text`, {
+													required: true,
+												})}
+												className='input input-bordered w-full font-medium text-gray-300'
+											/>
+											<button type='button' onClick={() => remove(index)}>
+												<svg
+													xmlns='http://www.w3.org/2000/svg'
+													className='h-6 w-6 text-gray-500'
+													fill='none'
+													viewBox='0 0 24 24'
+													stroke='currentColor'
+													strokeWidth={2}
+												>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+													/>
+												</svg>
+											</button>
+										</section>
+									</div>
+								)
+							})}
+						</div>
+
 						<div className='my-3 flex items-center'>
 							<button
 								type='button'
 								value='Add more options'
 								className='btn btn-ghost'
-								//onClick={() => append({ text: 'Another Option' })}
+								onClick={() => append({ text: 'Another Option' })}
 							>
 								Add options
 							</button>
 						</div>
+
 						<div className='mt-10 w-full'>
 							<button type='submit' className='btn w-full'>
 								Create question

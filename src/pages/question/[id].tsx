@@ -1,3 +1,4 @@
+import { CreateQuestionValidator } from '@/shared/create-question-validator'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
 
@@ -21,9 +22,11 @@ export const QuestionsPageContent = ({
 			<div className='text-2xl font-bold'>{data?.question?.question}</div>
 
 			<div>
-				{(data?.question?.options as string[])?.map((option, index) => (
-					<div key={index}>{option}</div>
-				))}
+				{(data?.question?.options as CreateQuestionValidator['options'])?.map(
+					(option, index) => (
+						<div key={index}>{option.text}</div>
+					)
+				)}
 			</div>
 		</div>
 	)
