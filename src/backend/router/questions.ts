@@ -1,4 +1,5 @@
 import { prisma } from '@/backend/infra/db'
+import { createQuestionValidator } from '@/shared/create-question-validator'
 import { z } from 'zod'
 import { createRouter } from './context'
 
@@ -27,10 +28,7 @@ export const questionRouter = createRouter()
 		},
 	})
 	.mutation('create', {
-		input: z.object({
-			question: z.string(),
-		}),
-
+		input: createQuestionValidator,
 		async resolve({ input, ctx }) {
 			if (!ctx.token) throw new Error('Unauthorized')
 
