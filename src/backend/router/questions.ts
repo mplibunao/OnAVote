@@ -27,8 +27,18 @@ export const questionRouter = createRouter()
 			const vote = await prisma.vote.findFirst({
 				where: { questionId: input.id, voterToken: ctx.token },
 			})
+			const isOwner = question?.ownerToken === ctx.token
 
-			return { question, vote, isOwner: question?.ownerToken === ctx.token }
+			if (vote || isOwner) {
+				const votes = await prisma.vote.groupBy({
+					by: ['choice'],
+					_count: true,
+				})
+
+				return { question, vote, isOwner, votes }
+			}
+
+			return { question, vote, isOwner }
 		},
 	})
 	.mutation('create', {

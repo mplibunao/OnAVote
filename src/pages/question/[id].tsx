@@ -10,9 +10,9 @@ export const QuestionsPageContent = ({
 	id,
 }: QuestionsPageContentProps): JSX.Element => {
 	const { data } = trpc.useQuery(['questions.getById', { id }])
-	const { mutate, data: _voteResponse } = trpc.useMutation(
-		'questions.voteOnQuestion'
-	)
+	const { mutate } = trpc.useMutation('questions.voteOnQuestion', {
+		onSuccess: () => window.location.reload(),
+	})
 
 	if (!data) return <div>Question not found</div>
 
@@ -28,7 +28,12 @@ export const QuestionsPageContent = ({
 				{(data?.question?.options as CreateQuestionValidator['options'])?.map(
 					(option, index) => {
 						if (data?.isOwner || data?.vote) {
-							return <div key={index}>{option.text}</div>
+							return (
+								<div
+									key={index}
+									className={data.vote?.choice === index ? 'underline' : ''}
+								>{`${data.votes[index]?._count} - ${option.text}`}</div>
+							)
 						}
 
 						return (
