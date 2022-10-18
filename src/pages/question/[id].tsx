@@ -9,9 +9,12 @@ export interface QuestionsPageContentProps {
 export const QuestionsPageContent = ({
 	id,
 }: QuestionsPageContentProps): JSX.Element => {
-	const { data, isLoading } = trpc.useQuery(['questions.getById', { id }])
+	const { data } = trpc.useQuery(['questions.getById', { id }])
+	const { mutate, data: _voteResponse } = trpc.useMutation(
+		'questions.voteOnQuestion'
+	)
 
-	if (!isLoading && !data) return <div>Question not found</div>
+	if (!data) return <div>Question not found</div>
 
 	return (
 		<div className='flex flex-col p-8'>
@@ -21,11 +24,27 @@ export const QuestionsPageContent = ({
 
 			<div className='text-2xl font-bold'>{data?.question?.question}</div>
 
-			<div>
+			<div className='flex flex-col gap-4'>
 				{(data?.question?.options as CreateQuestionValidator['options'])?.map(
-					(option, index) => (
-						<div key={index}>{option.text}</div>
-					)
+					(option, index) => {
+						if (data?.isOwner || data?.vote) {
+							return <div key={index}>{option.text}</div>
+						}
+
+						return (
+							<button
+								key={index}
+								onClick={() =>
+									mutate({
+										questionId: data?.question!.id,
+										option: index,
+									})
+								}
+							>
+								{option.text}
+							</button>
+						)
+					}
 				)}
 			</div>
 		</div>
