@@ -9,11 +9,12 @@ export interface QuestionsPageContentProps {
 export const QuestionsPageContent = ({
 	id,
 }: QuestionsPageContentProps): JSX.Element => {
-	const { data } = trpc.useQuery(['questions.getById', { id }])
+	const { data, isLoading } = trpc.useQuery(['questions.getById', { id }])
 	const { mutate } = trpc.useMutation('questions.voteOnQuestion', {
 		onSuccess: () => window.location.reload(),
 	})
 
+	if (isLoading) return <div>Loading...</div>
 	if (!data) return <div>Question not found</div>
 
 	return (
