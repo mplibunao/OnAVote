@@ -5,13 +5,14 @@ import Link from 'next/link'
 import { url } from '@/utils/url'
 import { SEO } from '@/components/SEO'
 import QuestionCard from '@/components/QuestionCard'
+import { PollQuestion } from '@prisma/client'
 
 const Home: NextPage = () => {
 	const [showToast, setShowToast] = React.useState<boolean>(false)
 	const { data, isLoading } = trpc.useQuery(['questions.getAllMyQuestions'])
 
-	const copyToClipboard = () => {
-		navigator.clipboard.writeText(url)
+	const copyToClipboard = (question: PollQuestion) => {
+		navigator.clipboard.writeText(`${url}/question/${question.id}`)
 		setShowToast(true)
 		setTimeout(() => setShowToast(false), 1500)
 	}
