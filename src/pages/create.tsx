@@ -23,7 +23,6 @@ const CreateQuestionForm = () => {
 		mode: 'onChange',
 	})
 
-	console.log('errors', errors) // eslint-disable-line no-console
 	const { fields, append, remove } = useFieldArray({
 		control, // control props comes from useForm (optional: if you are using FormContext)
 		name: 'options', // unique name for your Field Array
